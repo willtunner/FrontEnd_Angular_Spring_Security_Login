@@ -1,0 +1,13 @@
+ng g c account/login
+ng g c account/create-account
+ng g s account/shared/account
+ng g c layout/home
+ng g c layout/authentication
+ng g guard account/shared/auth
+
+
+refs:
+https://www.youtube.com/watch?v=RQB4Jwkc-c0&ab_channel=F%C3%A1bricadeC%C3%B3digo pt1
+https://www.youtube.com/watch?v=k1O3z7Gqvfc&ab_channel=F%C3%A1bricadeC%C3%B3digo pt2
+
+
