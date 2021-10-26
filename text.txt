@@ -10,4 +10,8 @@ refs:
 https://www.youtube.com/watch?v=RQB4Jwkc-c0&ab_channel=F%C3%A1bricadeC%C3%B3digo pt1
 https://www.youtube.com/watch?v=k1O3z7Gqvfc&ab_channel=F%C3%A1bricadeC%C3%B3digo pt2
 
+https://www.youtube.com/watch?v=1zCvBCqmUuo&ab_channel=GetArrays (load - backend)
+
+https://www.youtube.com/watch?v=1zCvBCqmUuo&t=7094s&ab_channel=GetArrays (frontend)
+
 

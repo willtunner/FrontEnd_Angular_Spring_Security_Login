@@ -1,7 +1,10 @@
 <h2>Tarefas</h2>
 <hr />
 
-<button type="button" class="btn btn-primary mb-2" [routerLink]="['/new']">
+<!-- Mostra o que vem do serviço/banco de dados -->
+<div> {{ appState$ | async | json }} </div>
+
+<!-- <button type="button" class="btn btn-primary mb-2" [routerLink]="['/new']">
     Nova tarefa
 </button>
 
@@ -15,4 +18,4 @@
             <app-task-list-item [task]="task" class="task-item" (onDeleteTask)="onTaskDeleted($event)"></app-task-list-item>
         </li>
     </ul>
-</section>
+</section> -->

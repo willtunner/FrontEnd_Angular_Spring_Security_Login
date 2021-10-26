@@ -33,7 +33,8 @@ export class LoginComponent implements OnInit {
 
           // Passa o tokem para serviço
           this.loginService.loginUser(response.access_token);
-          window.location.href="/";
+          window.location.href="";
+          //this.router.navigate(['']);
         },
         error => {
           console.log(error);
