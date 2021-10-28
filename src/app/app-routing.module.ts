@@ -7,6 +7,7 @@ import { AuthenticationComponent } from './layout/authentication/authentication.
 import { LoginComponent } from './account/login/login.component';
 import { CreateAccountComponent } from './account/create-account/create-account.component';
 import { AuthGuard } from './account/shared/auth.guard';
+import { ListUsersComponent } from './tasks/list-users/list-users.component';
 
 const routes: Routes = [
  {
@@ -15,6 +16,7 @@ const routes: Routes = [
    children: [
      { path: '', component: TaskListComponent },
      { path: '', component: TaskFormComponent },
+     { path: 'task/list-user', component: ListUsersComponent },
      { path: 'edit/:id', component: TaskFormComponent }
    ],
    canActivate: [AuthGuard] // retorna true ou false, se for false vai para rota de baixo .

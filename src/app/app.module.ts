@@ -13,6 +13,7 @@ import { CreateAccountComponent } from './account/create-account/create-account.
 import { AccountComponent } from './account/shared/account/account.component';
 import { HomeComponent } from './layout/home/home.component';
 import { AuthenticationComponent } from './layout/authentication/authentication.component';
+import { ListUsersComponent } from './tasks/list-users/list-users.component';
 
 @NgModule({
   declarations: [
@@ -24,7 +25,8 @@ import { AuthenticationComponent } from './layout/authentication/authentication.
     CreateAccountComponent,
     AccountComponent,
     HomeComponent,
-    AuthenticationComponent
+    AuthenticationComponent,
+    ListUsersComponent
   ],
   imports: [
     BrowserModule,

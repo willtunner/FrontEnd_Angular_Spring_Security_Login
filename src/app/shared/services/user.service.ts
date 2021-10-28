@@ -1,27 +1,26 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { Injectable } from "@angular/core";
+import { HttpClient, HttpErrorResponse } from "@angular/common/http";
+import { Observable, throwError } from "rxjs";
+import { User } from "./../models/User";
+import { CustomResponse } from "../interfaces/custom-response";
+import { environment } from "src/environments/environment";
+import { tap, catchError } from "rxjs/operators";
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: "root",
 })
 export class UserService {
+  constructor(private http: HttpClient) {}
 
-  private userUrl = 'http://localhost:8080/api/users';
-  private pmUrl = 'http://localhost:8080/server/list';
-  private adminUrl = 'http://localhost:8080/api/user/save/';
+  save$ = (user: User) =>
+    <Observable<CustomResponse>>(
+      this.http
+        .post<CustomResponse>(`${environment.api}/api/save`, user)
+        .pipe(tap(console.log), catchError(this.handleError))
+    );
 
-  constructor(private http: HttpClient) { }
-
-  getUserBoard(): Observable<string> {
-    return this.http.get(this.userUrl, { responseType: 'text'});
-  }
-
-  getPmUrl(): Observable<string> {
-    return this.http.get(this.pmUrl, { responseType: 'text'});
-  }
-
-  getAdminUrl(): Observable<string> {
-    return this.http.get(this.adminUrl, { responseType: 'text'});
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    console.log(error);
+    return throwError(`Ocorreu um erro - Error code: ${error.status}`);
   }
 }

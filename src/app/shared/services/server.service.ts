@@ -33,30 +33,31 @@ export class ServerService {
         catchError(this.handleError)
       );
 
-  filter$ = ( status: Status, response: CustomResponse ) => <Observable<CustomResponse>>
-    new Observable<CustomResponse>(
-      suscriber => {
-        console.log(response);
-        suscriber.next(
-          status === Status.ALL ? { ...response, message: `Servers filtered by ${ status } status` } :
-            {
-              ...response,
-              message: response.data.servers //? tem que mudar a configuração do strict em tsconfig.json para não mostrar como erro.
-                .filter(server => server.status === status).length > 0 ? `Servers filtrados por
-          ${ status === Status.SERVER_UP ? 'SERVER UP' : 'SERVER DOWN' } status` : `Nenhum server ${status} encontrado!`,
-              data: {
-                servers: response.data.servers
-                  .filter(server => server.status === status)
+      filter$ = (status: Status, response: CustomResponse) => <Observable<CustomResponse>>
+      new Observable<CustomResponse>(
+        suscriber => {
+          console.log(response);
+          suscriber.next(
+            status === Status.ALL ? { ...response, message: `Servers filtered by ${status} status` } :
+              {
+                ...response,
+                message: response.data.servers
+                  .filter(server => server.status === status).length > 0 ? `Servers filtered by 
+            ${status === Status.SERVER_UP ? 'SERVER UP'
+                  : 'SERVER DOWN'} status` : `No servers of ${status} found`,
+                data: {
+                  servers: response.data.servers
+                    .filter(server => server.status === status)
+                }
               }
-            }
+          );
+          suscriber.complete();
+        }
+      )
+        .pipe(
+          tap(console.log),
+          catchError(this.handleError)
         );
-        suscriber.complete();
-      }
-    )
-      .pipe(
-        tap(console.log),
-        catchError(this.handleError)
-      );
 
   delete$ = (serverId: number) => <Observable<CustomResponse>>
     this.http.delete<CustomResponse>(`${environment.api}/server/delete/${serverId}`)

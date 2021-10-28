@@ -1,0 +1,35 @@
+<h2>Tarefas</h2>
+<button (click)="goToHome()"  class="btn btn-success ">Home</button>
+<hr />
+
+
+<div class="table-title">
+    <div class="row">
+        <div class="col-sm-4">
+            <h2>Manage Users</h2>
+        </div>
+        <div class="col-sm-8">
+            <button  type="button" class="btn btn-primary">Print Report</button>
+
+            <a href="#addUserModal" class="btn btn-success" data-toggle="modal">
+              <i class="material-icons">&#xE147;</i>
+              <span>Add new User</span>
+          </a>
+
+            <a href="#addEmployeeModal" class="btn btn-success" data-toggle="modal">
+                <i class="material-icons">&#xE147;</i>
+                <span>New Server</span>
+            </a>
+
+
+            <span>
+                <select name="status" ngModel="ALL"
+                    class="btn btn-info" style="height: 32.91px;">
+                    <option value="ALL">ALL</option>
+                    <option value="SERVER_UP">SERVER UP</option>
+                    <option value="SERVER_DOWN">SERVER DOWN</option>
+                </select>
+            </span>
+        </div>
+    </div>
+</div> <br>

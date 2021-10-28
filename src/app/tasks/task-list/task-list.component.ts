@@ -1,7 +1,9 @@
-import { ChangeDetectionStrategy, Component, OnInit } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, map, startWith } from 'rxjs/operators';
+import { CustomUserResponse } from 'src/app/shared/interfaces/custon-user-response';
+import { UserService } from 'src/app/shared/services/user.service';
 import { DataState } from '../../shared/enuns/data-state.enum';
 import { Status } from '../../shared/enuns/status.enum';
 import { AppState } from '../../shared/interfaces/app-state';
@@ -10,6 +12,8 @@ import { Server } from '../../shared/interfaces/server';
 //import { NotificationService } from '../../shared/services/notification.service';
 import { ServerService } from '../../shared/services/server.service';
 import { Task } from '../shared/task';
+import { User } from './../../shared/models/User';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-task-list',
@@ -21,9 +25,11 @@ export class TaskListComponent implements OnInit {
   appState$: Observable<AppState<CustomResponse>>;
   readonly DataState = DataState;
   readonly Status = Status;
-  private filterSubject = new BehaviorSubject<string>('');
   private dataSubject = new BehaviorSubject<CustomResponse>(null);
+
+  private filterSubject = new BehaviorSubject<string>('');
   filterStatus$ = this.filterSubject.asObservable();
+
   private isLoading = new BehaviorSubject<boolean>(false);
   isLoading$ = this.isLoading.asObservable();
   
@@ -31,13 +37,13 @@ export class TaskListComponent implements OnInit {
 
 
 
-  constructor(private serverService: ServerService/*, private notifier: NotificationService*/) { }
+  constructor(private serverService: ServerService/*, private notifier: NotificationService*/, private userService: UserService, private router: Router) { }
 
   ngOnInit() {
     this.appState$ = this.serverService.servers$
     .pipe(
       map(response => {
-        console.log(response);
+        //console.log(response);
         //this.notifier.onDefault(response.message);
         this.dataSubject.next(response);
         return { dataState: DataState.LOADED_STATE, appData: { ...response, data: { servers: response.data.servers.reverse() } } }
@@ -59,25 +65,25 @@ export class TaskListComponent implements OnInit {
     }
   }
 
-  // pingServer(ipAddress: string): void {
-  //   this.filterSubject.next(ipAddress);
-  //   this.appState$ = this.serverService.ping$(ipAddress)
-  //     .pipe(
-  //       map(response => {
-  //         const index = this.dataSubject.value.data.servers.findIndex(server =>  server.id === response.data.server.id);
-  //         this.dataSubject.value.data.servers[index] = response.data.server;
-  //         this.notifier.onDefault(response.message);
-  //         this.filterSubject.next('');
-  //         return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }
-  //       }),
-  //       startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
-  //       catchError((error: string) => {
-  //         this.filterSubject.next('');
-  //         this.notifier.onError(error);
-  //         return of({ dataState: DataState.ERROR_STATE, error });
-  //       })
-  //     );
-  // }
+  pingServer(ipAddress: string): void {
+    this.filterSubject.next(ipAddress);
+    this.appState$ = this.serverService.ping$(ipAddress)
+      .pipe(
+        map(response => {
+          const index = this.dataSubject.value.data.servers.findIndex(server =>  server.id === response.data.server.id);
+          this.dataSubject.value.data.servers[index] = response.data.server;
+          //this.notifier.onDefault(response.message);
+          this.filterSubject.next('');
+          return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }
+        }),
+        startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
+        catchError((error: string) => {
+          this.filterSubject.next('');
+          //this.notifier.onError(error);
+          return of({ dataState: DataState.ERROR_STATE, error });
+        })
+      );
+  }
 
   saveServer(serverForm: NgForm): void {
     this.isLoading.next(true);
@@ -90,7 +96,7 @@ export class TaskListComponent implements OnInit {
           //this.notifier.onDefault(response.message);
           document.getElementById('closeModal').click();
           this.isLoading.next(false);
-          serverForm.resetForm({ status: this.Status.SERVER_DOWN });
+          serverForm.resetForm(/*{ status: this.Status.SERVER_DOWN }*/);
           return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }
         }),
         startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
@@ -102,8 +108,30 @@ export class TaskListComponent implements OnInit {
       );
 }
 
-saveUser(formUser: NgForm): void{
-      console.log(formUser);
+saveUser(formUser: NgForm): void {
+  this.isLoading.next(true);
+
+  this.appState$ = this.userService.save$(formUser.value as User)
+  .pipe(
+    map(response => {
+      this.dataSubject.next(
+        {...response, dataUser: { users: this.dataSubject.value.dataUser.users } }
+      );
+      //this.notifier.onDefault(response.message);
+      document.getElementById('closeModal').click();
+          this.isLoading.next(false);
+          formUser.resetForm(/*{ status: this.Status.SERVER_DOWN }*/);
+      return { dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }
+
+      console.log(response);
+    } ),
+    startWith({ dataState: DataState.LOADED_STATE, appData: this.dataSubject.value }),
+    catchError((error: string) => {
+      this.isLoading.next(false);
+      //this.notifier.onError(error);
+      return of({ dataState: DataState.ERROR_STATE, error });
+    })
+  );
 }
 
   filterServers(status: Status): void {
@@ -153,6 +181,10 @@ saveUser(formUser: NgForm): void{
     downloadLink.download = 'server-report.xls';
     downloadLink.click();
     document.body.removeChild(downloadLink);
+  }
+
+  goToListUser(){
+    this.router.navigate(['task/list-user']);
   }
 }
 
